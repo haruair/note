@@ -2,7 +2,7 @@
 id: edx-fp101-first-step
 title: eDx FP101 First Step
 lecture-start: 2015-11-01
-lecture-end:
+lecture-end: 2015-11-03
 ---
 
 # First Steps
