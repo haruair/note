@@ -6,7 +6,7 @@ path: 2015-04-20-a-better-way-to-scope-angular-extend-no-more-vm-this.md
 original: https://github.com/toddmotto/toddmotto.github.io/blob/master/_posts/2015-04-20-a-better-way-to-scope-angular-extend-no-more-vm-this.md
 ---
 
-Angular 컨트롤러는 지난 한 해 동안 발전해왔다. 이제는 많은 사람들이 가장 최근에 추가된 "컨트롤러" 문법인 `controllerAs` 스타일을 활용하고 있다. (`$scope`를 직접 바인딩하는 방식을 멀리 하고서 말이다.)
+Angular 컨트롤러는 지난 1년간 발전해왔다. 이제는 많은 사람들이 가장 최근에 추가된 "컨트롤러" 문법인 `controllerAs` 스타일을 활용하고 있다. (`$scope`를 직접 바인딩하는 방식을 멀리 하고서 말이다.)
 
 스타일에 대한 다양한 의견 중 내가 수용하고 있는 방식은, 컨트롤러 가장 상위에 `var vm = this;`를 우선적으로 선언하는 것이다. 최근에는 `vm`을 실제 자바스크립트 컨트롤러 내에서 사용하는 것을 멀리하고 있다. 대신 평범한 자바스크립트 변수와 함수로 작성한 후, 필요로 하는 부분을 "exports"와 같은 방식으로 외부에서 바인딩 할 수 있게 작성하고 있다.
 
