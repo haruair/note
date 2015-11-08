@@ -3,13 +3,14 @@ layout: post
 permalink: /digging-into-angulars-controller-as-syntax
 title: Digging into Angular’s “Controller as” syntax
 path: 2014-05-26-digging-into-angulars-controller-as-syntax.md
+original: https://raw.githubusercontent.com/toddmotto/toddmotto.github.io/master/_posts/2014-05-26-digging-into-angulars-controller-as-syntax.md
 ---
 
-AngularJS Controllers have recently gone under some changes (version 1.2 to be precise). What this means for scopes, Controllers and Angular development is some very subtle but powerful changes. One of those changes I believe is improved architecture, clearer scoping and smarter Controllers.
+AnularJS 컨트롤러는 최근 몇가지 변화가 있었다. (정확하게는 버전 1.2부터.) 스코프, 컨트롤러와 Angular 개발에 있어서 이 의미는 꽤 희미하면서도 아주 강력한 변화다. 이 변화는 구조를 향상하고 더 깔끔한 스코프와 똑똑한 컨트롤러를 만드는데 일조한다.
 
-Controllers as we know them are class-like Objects that drive Model and View changes, but they all seem to revolve around this mystical `$scope` Object. Angular Controllers have been pushed to change the way `$scope` is declared, with many developers suggesting using the `this` keyword instead of `$scope`.
+우리가 알고 있는 컨트롤러는 클래스 같은(class-like) 객체로 Model과 View를 변경하는데 사용되지만, 이 모든 과정이 수수께끼 같은 `$scope` 객체에 의해 이뤄진다. 많은 개발자가 `this` 키워드를 `$scope` 대신 사용하는 것을 추천하고 있어 Angular 컨트롤러에서 `$scope`가 선언되어 있는 방식을 변경하도록 압박하고 있다.
 
-Pre v1.2.0 Controllers looked similar to this:
+v1.2.0 이전의 컨트롤러는 다음과 같이 생겼다:
 
 {% highlight javascript %}
 // <div ng-controller="MainCtrl"></div>
@@ -18,7 +19,7 @@ app.controller('MainCtrl', function ($scope) {
 });
 {% endhighlight %}
 
-Here, the concept of the Controller is separate from the $scope itself, as we have to dependency inject it. Some argued this would've been better:
+늘 컨트롤러에 $scope를 주입했었지만, 다음은 컨트롤러를 $scope로부터 분리한 개념이다. 이 방식이 더 낫다고 논의되었다:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function () {
@@ -26,11 +27,11 @@ app.controller('MainCtrl', function () {
 });
 {% endhighlight %}
 
-We didn't _quite_ get there, but we got something pretty awesome in return.
+별로 한 일은 없지만 이 과정으로 좀 멋진 결과를 얻을 수 있게 되었다.
 
-### Controllers as Classes
+### 클래스로서 컨트롤러
 
-If you instantiate a "class" in JavaScript, you might do this:
+자바스크립트에서 "class"를 인스턴스화(instantiation) 하면, 다음과 같을 것이다:
 
 {% highlight javascript %}
 var myClass = function () {
@@ -39,24 +40,24 @@ var myClass = function () {
 var myInstance = new myClass();
 {% endhighlight %}
 
-We can then use the `myInstance` instance to access `myClass` methods and properties. In Angular, we get the feel of proper instantiation with the new `Controller as` syntax. Here's a quick look at declaring and binding:
+이렇게 선언 후 `myInstance` 인스턴스를 사용해 `myClass`의 메소드와 프로퍼티에 접근할 수 있다. Angular에서는 이와 비슷한 방식으로 접근하는 방법으로 `Controller as` 문법을 제공하게 되었다. 다음은 어떻게 선언하고 바인딩 하는지에 대한 예제다:
 
 {% highlight javascript %}
-// we declare as usual, just using the `this` Object instead of `$scope`
+// 선언은 평소같이 하지만 `$scope` 대신 `this`를 사용
 app.controller('MainCtrl', function () {
   this.title = 'Some title';
 });
 {% endhighlight %}
 
-This is more of a class based setup, and when instantiating a Controller in the DOM we get to instantiate against a variable:
+이 방법은 더 클래스 기반 설정을 사용할 수 있게 되어, 이 컨트롤러를 DOM에서 인스턴스화 할 때 쉽게 변수에 할당할 수 있게 된다:
 
 {% highlight html %}
 <div ng-controller="MainCtrl as main">
-  // MainCtrl doesn't exist, we get the `main` instance only
+  // MainCtrl은 존재하지 않고, 대신 `main` 인스턴스를 얻을 수 있음
 </div>
 {% endhighlight %}
 
-To reflect `this.title` in the DOM, we need to ride off our instance:
+`this.title`을 DOM에 반영하기 위해서는 새 인스턴스를 사용하면 된다:
 
 {% highlight html %}
 <div ng-controller="MainCtrl as main">
@@ -64,13 +65,13 @@ To reflect `this.title` in the DOM, we need to ride off our instance:
 </div>
 {% endhighlight %}
 
-Namespacing the scopes is a great move I think, it cleans up Angular _massively_. I've always disliked the "floating variables" such as `{% raw %}{{ title }}{% endraw %}`, I much prefer hitting the instance with `{% raw %}{{ main.title }}{% endraw %}`.
+스코프를 네임스페이스로 처리할 수 있는 것은 아주 좋은 접근이라고 생각하며 Angular를 _엄청나게_ 깔끔하게 한다고 생각한다. 난 항상 `{% raw %}{{ title }}{% endraw %}` 같이 "떠있는 변수(모호한 변수)"를 싫어했는데, `{% raw %}{{ main.title }}{% endraw %}` 처럼 인스턴스와 함께 작성할 수 있는 방식은 훨씬 마음에 든다.
 
-### Nested scopes
+### 중첩된 스코프
 
-Nested scopes is where we see great return from the `Controller as` syntax, often we've had to use the current scope's `$parent` property to scale back _up_ scopes to get where we need.
+중첩된 스코프도 `Controller as` 문법에서 얻을 수 있는 결과인데, 가끔 현재 스코프의 `$parent` 프로퍼티에 접근해 _상위_ 스코프에서 필요한 부분을 받아와야 할 필요가 있었다.
 
-Take this for example:
+다음 예제를 보자:
 
 {% highlight html %}
 <div ng-controller="MainCtrl">
@@ -84,7 +85,7 @@ Take this for example:
 </div>
 {% endhighlight %}
 
-Firstly, we're going to get interpolation issues as `{% raw %}{{ title }}{% endraw %}` will be very confusing to use and most likely one scope will take precidence over another. We also don't know which one that might be. Whereas if we did this things are far clearer and variables can be accessed properly across scopes:
+먼저 `{% raw %}{{ title }}{% endraw %}` 를 반복적으로 사용하는데다  여러 스코프의 경계를 오가고 있기 때문에 이 값이 어디서 들어오는지 아주 모호하고 혼란스러운 인터폴레이션(interpolation) 이슈가 발생한다. 어느게 무엇이 될 지도 예측하기 어렵다. 스코프를 가로질러 변수에 접근하는 것은 이해하는데 훨씬 명확하다:
 
 {% highlight html %}
 <div ng-controller="MainCtrl as main">
@@ -98,7 +99,7 @@ Firstly, we're going to get interpolation issues as `{% raw %}{{ title }}{% endr
 </div>
 {% endhighlight %}
 
-I can also access parent scopes without doing this:
+또한 부모 스코프에 다음과 같이 작성하지 않고도 접근할 수 있다:
 
 {% highlight html %}
 <div ng-controller="MainCtrl">
@@ -115,7 +116,7 @@ I can also access parent scopes without doing this:
 </div>
 {% endhighlight %}
 
-And make things more logical:
+그리고 더욱 논리적이다:
 
 {% highlight html %}
 <div ng-controller="MainCtrl as main">
@@ -132,14 +133,14 @@ And make things more logical:
 </div>
 {% endhighlight %}
 
-No hacky `$parent` calls. If a Controller's position in the DOM/stack were to change, the position in sequential `$parent.$parent.$parent.$parent` may change! Accessing the scope lexically makes perfect sense.
+깔끔하지 않은 `$parent` 호출을 더이상 안해도 된다. 만약 컨트롤러의 위치가 DOM 또는 스택 내에서 변경된다면, `$parent.$parent.$parent.$parent`를 연쇄적으로 변경해야만 한다! 어휘적으로 스코프에 접근할 수 있는 것이 훨씬 편리하다.
 
-### $watchers/$scope methods
-The first time I used the `Controller as` syntax I was like "yeah, awesome!", but then to use scope watchers or methods (such as `$watch`, `$broadcast`, `$on` etc.) we need to dependency inject `$scope`. Gargh, this is what we tried so hard to get away from. But then I realised this was awesome.
+### $watchers/$scope 메소드
+`Controller as` 문법을 맨 처음 사용하고서 "오, 대박!" 이랬지만, 스코프 관찰자(watchers)나 메소드를 사용하기 위해서는 `$scope`의 의존성을 주입할 필요가 있다. (예를 들면 `$watch`, `$broadcast`, `$on` 같은 것을 사용해야 할 때.) 웩, 이 부분을 얼마나 피하려고 노력했는데 말이다. 하지만 이조차도 대박인 것을 알게 되었다.
 
-The way the `Controller as` syntax works, is by _binding_ the Controller to the current `$scope` rather than it being all one `$scope`-like class-like Object. For me, the key is the separation between the class and special Angular features.
+`Controller as` 문법이 동작하는 방식은 `$scope` 같은 클래스 같은 객체가 되는 것이 아니라, 컨트롤러가 현재 `$scope`에 _바인딩_ 하도록 하는 방식이다. 나에게는 클래스와 Angular의 특별한 기능을 분리하는 핵심적인 방식이 되었다.
 
-This means I can have my pretty class-like Controller:
+이 의미는 다음 같이 클래스 같은 컨트롤러를 갖고 있다는 뜻이다:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function () {
@@ -147,9 +148,9 @@ app.controller('MainCtrl', function () {
 });
 {% endhighlight %}
 
-When I need something above and beyond generic bindings, I introduce the magnificent `$scope` dependency to do something _special_, rather than ordinary.
+이 기능 이전에 또는 일반적인 바인딩 이상의 기능이 필요할 때, `$scope`를 의존성으로 넣어, 그냥 컨트롤러보다 훨씬 강력하고 _특별한_ 기능을 활용할 수 있게 되었다.
 
-Those special things include all the `$scope` methods, let's look at an example:
+이 특별한 기능은 `$scope`의 메소드로 모두 포함되어 있다. 다음 예제를 보자:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function ($scope) {
@@ -160,8 +161,8 @@ app.controller('MainCtrl', function ($scope) {
 });
 {% endhighlight %}
 
-#### Ironing a quirk
-Interestingly enough, whilst writing this I wanted to provide a `$scope.$watch()` example. Doing this usually is very simple, but using the `Controller as` syntax doesn't work quite as expected:
+#### 꼬인 문제 다리미질 하기
+이 코드는 `$scope.$watch()` 예제를 작성하는 동안 나타난 흥미로운 문제다. 아주 단순한 예제지만 `Controller as` 문법에서는 예상한대로 동작하지 않는다:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function ($scope) {
@@ -173,44 +174,46 @@ app.controller('MainCtrl', function ($scope) {
 });
 {% endhighlight %}
 
-Uh oh! So what do we do? Interestingly enough I was reading the other day, and you can actually pass in a function as the first argument of a `$watch()`:
+헤헤, 그래서 여기서 뭘 할 수 있나? 재밌게도 다른 날 이 코드를 읽었을 때, 이 부분에서 `$watch()`에게 첫 인자를 함수로 넘겨주면 해결할 수 있는 문제인 것을 알 수 있었다:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function ($scope) {
   this.title = 'Some title';
-  // hmmm, a function
+  // 음.. 함수로 쓰면,
   $scope.$watch(function () {}, function (newVal, oldVal) {});
 });
 {% endhighlight %}
 
-Which means we can return our `this.title` reference:
+그 의미는 여기서 작성한 `this.title`을 참조로 넘길 수 있다는 뜻이다:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function ($scope) {
   this.title = 'Some title';
-  // nearly there...
+  // 이러면 되겠군...
   $scope.$watch(function () {
-    return this.title; // `this` isn't the `this` above!!
+    return this.title; // `this`가 위에서 말한 `this`가 아니네!!
   }, function (newVal, oldVal) {});
 });
 {% endhighlight %}
 
-Let's change some execution context using `angular.bind()`:
+컨텍스트를 `angular.bind()`를 사용해 변경하자:
 
 {% highlight javascript %}
 app.controller('MainCtrl', function ($scope) {
   this.title = 'Some title';
-  // boom
+  // 짠
   $scope.$watch(angular.bind(this, function () {
-    return this.title; // `this` IS the `this` above!!
+    return this.title; // 이 `this`가 위 `this`와 같음
   }), function (newVal, oldVal) {
-    // now we will pickup changes to newVal and oldVal
+    // 이제 newVal과 oldVal의 변화를 잡을 수 있음
   });
 });
 {% endhighlight %}
 
-## Declaring in `$routeProvider`/Directives/elsewhere
-Controllers can by dynamically assigned, we don't need to always bind them via attributes. Inside Directives, we get a `controllerAs:` property, this is easily assigned:
+역주. IE9 이상을 지원한다면 angular.bind 대신 `Function#bind`를 사용해도 되고, John Papa의 방식대로 `var vm = this;` 식으로 작성해 회피해도 된다.
+
+## `$routeProvider`/디렉티브/그 외 아무곳에나 선언하기
+컨트롤러는 동적으로 배정될 수 있으므로 항상 어트리뷰트로 연결해둘 필요가 없다. 디렉티브 내에서 `controllerAs:` 프로퍼티를 사용할 수 있고, 이 프로퍼티는 쉽게 배정할 수 있다:
 
 {% highlight javascript %}
 app.directive('myDirective', function () {
@@ -219,14 +222,14 @@ app.directive('myDirective', function () {
     replace: true,
     scope: true,
     template: [].join(''),
-    controllerAs: '', // woohoo, nice and easy!
-    controller: function () {}, // we'll instantiate this controller "as" the above name
+    controllerAs: '', // 쉽고 편하다!
+    controller: function () {}, // 이 컨트롤러를 위 controllerAs 의 이름으로 인스턴트화 할 것임
     link: function () {}
   };
 });
 {% endhighlight %}
 
-The same inside `$routeProvider`:
+`$routeProvider` 내에서도 동일하다:
 
 {% highlight javascript %}
 app.config(function ($routeProvider) {
@@ -242,9 +245,9 @@ app.config(function ($routeProvider) {
 });
 {% endhighlight %}
 
-### Testing controllerAs syntax
+### controllerAs 문법 테스트하기
 
-There's a subtle difference when testing `controllerAs`, and thankfully we no longer need to dependency inject `$scope`. This means we also don't need to have a reference property when testing the Controller (such as `vm.prop`), we can simply use the variable name we assign `$controller` to.
+`controllerAs`를 테스트하는데 미묘하게 다른데 고맙게도 `$scope`를 주입할 필요가 없다. 이 의미는 컨트롤러를 테스트할 때 참조하는 프로퍼티를 넣을 필요가 없다는 뜻이다. (`vm.prop` 같은 부분.) 이제 간단하게 `$controller`에 변수명을 지정하는 것만으로 테스트할 수 있다.
 
 {% highlight javascript %}
 // controller
@@ -274,7 +277,7 @@ describe('MainCtrl', function() {
 });
 {% endhighlight %}
 
-You can alternatively use the `controllerAs` syntax in the `$controller` instantiation but you will need to inject a `$scope` instance into the Object that is passed into `$controller`. The alias (for instance `scope.main`) for the Controller will be added to this `$scope` (like it is in our actual Angular apps), however this is a less elegant solution.
+`controllerAs` 문법을 사용했을 때 `$controller` 함수로 인스턴스화 하는 것 대신에 `$scope`를 주입해야 할 필요가 있는 경우에는 `$controller`에 다음과 같이 객체로 넘겨주면 된다. (`scope.main` 인스턴스에서 사용될) 컨트롤러를 위한 이 alias는 `$scope`를 (실제 Angular 앱처럼) 추가하게 된다. 하지만 그다지 아름다운 해법은 아니다.
 
 {% highlight javascript %}
 // Same test becomes
@@ -298,4 +301,3 @@ describe('MainCtrl', function() {
   });
 });
 {% endhighlight %}
-
