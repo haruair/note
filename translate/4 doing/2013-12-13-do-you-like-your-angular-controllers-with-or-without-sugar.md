@@ -7,40 +7,36 @@ comments: true
 categories: [angular, patterns, Uncategorized]
 original: http://www.johnpapa.net/do-you-like-your-angular-controllers-with-or-without-sugar/
 ---
-<p><img src="http://www.johnpapa.net/wp-content/uploads/2013/12/sugar-make-us-age-1.jpg" alt="sugar-make-us-age-1" width="150" height="150" class="alignleft size-full wp-image-22911" />Even if you've only read about <a href="http://angularjs.org" target="_blank">Angular</a>, the odds are you've seen the rampant use of <code>$scope</code> in the C of MVC (controllers). <code>$scope</code> is the glue between the Controller and the View that helps with all of our data binding needs. Recently the Angular team opened up a new way to use <code>$scope</code> with Controllers. So now you can use <code>$scope</code> (what I'll refer to as Classic Controllers) and you can use this (what the Angular team and I refer to as Controller As). I hear a lot of questions about these 2 techniques. Everyone loves choice, but at the same time, most folks like to know clearly what they are getting or giving up with the choices. So let's discuss the two controller constructs in Angular (with <code>$scope</code> and Controller As) and how scope plays in both of these.</p>
 
-<blockquote>
-  <p>Both Classic Controller and Controller As have <code>$scope</code>.  That's super important to understand. You are not giving up any goodness with either approach. Really. Both have their uses.</p>
-</blockquote>
+[Angular](http://angularjs.org) 문서만 읽고 왔더라도 `$scope`를 MVC의 C(컨트롤러)에서 미친듯이 사용하는 모습은 이상하게 보였을 것이다. `$scope`는 컨트롤러와 뷰 사이를 연결하는 풀과 같은 존재로 데이터 연결이 필요한 모든 경우를 돕는다. 최근 Angular 팀은 컨트롤러에서 `$scope`를 사용하는 새로운 방식을 공개했다. 이제 `$scope`(이 단어를 쓰면 전통적인 방식의 컨트롤러에서 쓰는걸 의미함)와 함께 `this`(Angular 팀과 내가 Controller-As로 사용하는 방식을 의미함)을 사용할 수 있게 되었다. 이 두 가지 기술에 대한 질문을 아주 많이 받았다. 모두가 선택을 좋아하고 동시에 그 선택에서 얻을 수 있는 것이 무엇인지 명확하게 알고 싶어한다. 그래서 Angular에서 컨트롤러를 생성할 때 사용할 수 있는 이 두 가지 방식(`$scope`와 Controller As)에 대해 이야기하고 활용해보자.
 
-<h3>First, some history ...</h3>
+> 전통적인 컨트롤러와 Controller As 모두 `$scope`를 갖고 있다. 이 점이 이해하는데 가장 중요하다. 어느 한 방식을 선택한다고 다른 장점을 포기하는 것이 아니다. 정말. 이 두가지 방법은 모두 사용된다.
 
-<p><code>$scope</code> is the "classic" technique while "controller as" is much more recent (as of version 1.2.0 officially though it id appear in unstable pre-releases prior to this). Both work perfectly well and the best guidance I can give is to try to be consistent with choosing one or the other. You can mix them in the same app, but for Pete's sake have an explicit reason for it first. So pick one and roll with it. The most important thing is to be consistent. Which one? That depends on you. There are many more examples out there of <code>$scope</code>, but "controller as" is picking up steam as well. Is one better than the other? That's debatable. So how do you choose?</p>
+### 먼저 알아야 할 과거
 
-<h3>Comfort I prefer the "controller as" because I like hiding the</h3>
+`$scope`는 "전통적인" 기법으로 "controller as"는 아주 최근에 나온 기술이다. (공식적으로 1.2.0 pre릴리스에서 나타나지만 불완전했음.) 둘 다 완벽하게 동작하기에 내가 줄 수 있는 지침은 둘 중 하나를 골라 일관되게 사용하라는 것이다. 하나의 앱에서 둘 다 섞어서 사용할 수 있지만, 일관적으로 사용해야 하는 이유는 놀라울 정도로 명확하다. 그러므로 하나를 고르고 주사위를 던져라. 가장 중요한 점은 일관성이다. 어느 것을 골라야 하나? 그 선택은 개발자에게 달렸다. `$scope`를 이용한 예가 훨씬 많지만 "controller as"도 흐름에 따라 잘 골라야 한다. 둘 중 어느 것이 더 나은가? 논쟁할 만한 주제다. 그렇다면 어떻게 골라야 할까?
 
-<p><code>$scope</code> and exposing the members from the controller to the view via an intermediary object. By setting <code>this.*</code>, I can expose just what I want to expose from the controller to the view. You can do that with <code>$scope</code> too, I just prefer to use standard JavaScript for this. Overall, for me it really just comes down to personal preference and mine is that I prefer the Controller As technique. In fact, I code it like this:</p>
 
-<pre class="prettyprint linenums">var vm = this;
+### "controller as"를 선호하면 숨기기 편하다
 
-vm.title = 'some title';
-vm.saveData = function(){ ... } ;
+중개하는 역할을 하는 객체인 `$scope`를 사용하면 컨트롤러에서 사용하는 모든 맴버를 뷰에 공개하게 된다. `this.*`를 설정하는 것으로 컨트롤러에서 뷰에 공개하고 싶은 부분에 대해서만 노출하는 것이 가능하다. 물론 `$scope`를 사용해도 동일하게 쓸 수 있지만 표준 자바스크립트의 this를 사용하는 것을 선호한다. 종합적으로 보면 개인적인 선호에 따라 Controller As 기법을 더 선호한다. 다음과 같이 코드를 작성한다:
 
-</pre>
+    var vm = this;
 
-<p>This feels cleaner to me and makes it easy to see what is being exposed to the view. Notice I name the variable "vm" , which stands for viewmodel. That's just my convention. With $scope I can do the same things, so I'm not adding or detracting with the technique.</p>
+    vm.title = 'some title';
+    vm.saveData = function() { ... };
 
-<pre class="prettyprint linenums">$scope.title = 'some title';
-$scope.saveData = function() { ... };
-</pre>
+이 방식이 더 보기 쉽고 어떤 부분이 뷰에 노출되는지 쉽게 확인할 수 있다. "vm" 변수는 뷰모델(viewmodel)을 의미한다. 이 명칭은 단순하게 내 컨벤션이다. $scope를 사용할 때도 같은 방법을 쓸 수 있지만 $scope를 사용할 때는 그렇게 작성하지 않았다.
 
-<p>So its up to you there.</p>
+    $scope.title = 'some title';
+    $scope.saveData = function() { ... };
 
-<h3>Injection With</h3>
+결국 이 부분은 작성자에게 달려있다.
 
-<p><code>$scope</code> I do need to inject <code>$scope</code> into the controller. I don't have to do this with controller as, unless I need it for some other reason (like $broadcast or watches, though I try to avoid watches in the controller). This is another reason I prefer Controller As: I like knowing that I only inject <code>$scope</code> explicitly if I need something besides data binding. Listening for a broadcast message is one example. A watch is yet another, though I try to avoid watches in controllers.</p>
+### 주입이 필요한 경우
 
-<h3>Trends There appears to, at this time, be more code examples out there using the classic approach with $scope explicitly. However I am seeing more and more examples of Controller As. If you want a file template for creating controllers you can use</h3>
+`$scope`는 컨트롤러에 `$scope`를 주입할 필요가 있을 때 사용한다. 이 부분은 controller as 기법을 사용할 때는 필요 없는 부분이지만 몇가지 다른 이유에 의해 필요할 때가 존재한다. (가령 $broadcast가 필요하거나, watch를 사용할 필요가 있는데 컨트롤러 내에서 하는 것을 피하고 싶을 때.) 이 부분은 사실 Controller As 기법을 더 좋아하는 이유 중 하나다. `$scope`가 데이터 바인딩 등을 위해 정말 필요한 상황일 때만 명시적으로 선언하기 때문이다. broadcast 메시지를 듣기 위한 것도 한 예제다. watch는 다른 경우지만 컨트롤러 내에서 watch하고 싶지 않은 경우에 사용할 수 있다.
 
-<p><a href="http://sidewaffle.com/" target="_blank">SideWaffle</a>, a plug-in for Visual Studio. It offers both flavors of controllers in its file templates. Don't like sugar? choose classic controllers with $scope. Want some sugar? Choose controller as. The Angular team has given us options and I'm glad they have. I personally prefer the Controller As technique. Either way you get data binding. With Controller As you get some sugar on top that makes working with $scope feel better, in my opinion. So you just have to choose if you want your Angular with or without sugar :)</p>
+### 유행은?
 
+명시적으로 $scope가 선언된 코드가 더 오래 사용한 방식이기 때문에 예제가 많다. 하지만 최근 예제는 Controller As를 사용한 경우가 많다. 이 예제를 원한다면 Visual Studio 플러그인인 [SideWaffle](http://sidewaffle.com)을 사용할 수 있다. 이 두가지 기법 컨트롤러 모두를 지원한다. 설탕이 싫다면 전통적인 $scope 컨트롤러를 선택하라. 설탕을 원한다면 controller as 를 선택하라. Angular 팀은 이 두가지 선택지를 제공하고 있고 이 선택지 모두 마음에 든다. 개인적으로는 Controller As 기법이 마음에 든다. 이 두가지 방법 모두 데이터 바인딩을 할 수 있다. Controller As는 $scope와 개발하는데 더 편리하게 한다고 생각한다. 그러니 둘 중 어느 것을 선택하는가는 온전히 당신의 몫이다.
