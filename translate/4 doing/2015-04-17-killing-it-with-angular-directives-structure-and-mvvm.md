@@ -54,7 +54,7 @@ angular
 이 코드가 내가 기본적으로 필요로 하는 모든 요소가 포함된 "디렉티브 보일러플레이트"로, 이 코드를 기초로 동작하는 디렉티브를 만든다.
 
 ### 컨트롤러 Controller (presentational layer)
-컨트롤러를 `controller: fn`처럼 객체에 바인딩하는 대신 (`link`에도 동일), `controller` 프로퍼티를 `fileUpload` 함수 정의 내에서 바인딩을 먼저 한 후, 객체에 연결해 반환받는 형태로 작성한다. 이 방식으로 작성하면 함수를 객체에 직접 작성하는 방식보다 함수를 정의하는 공간이 있기 때문에 연관된 함수를 더 쉽게 찾고 이해할 수 있고, 함수에 주석을 작성하는데 더 나은 구조가 된다. 이 형태는 "엄격해 보이는 API"에 묶여 있는 느낌보다 평범한 JavaScript처럼 표현된다.
+컨트롤러를 `controller: fn`처럼 객체에 바인딩하는 대신 (`link`에도 동일), `controller` 프로퍼티를 `fileUpload` 함수 정의 내에서 바인딩을 먼저 한 후, 객체에 연결해 반환받는 형태로 작성한다. 이 방식으로 작성하면 함수를 객체에 직접 작성하는 방식보다 함수를 정의하는 공간이 있어서 연관된 함수를 더 쉽게 찾고 이해할 수 있고, 함수에 주석을 작성하는데 더 나은 구조가 된다. 이 형태는 "엄격해 보이는 API"에 묶여 있는 느낌보다 평범한 JavaScript처럼 표현된다.
 
 함수를 맨 위에 작성하고 주석 몇 개를 작성한다.
 
@@ -101,7 +101,7 @@ angular
   .directive('fileUpload', fileUpload);
 {% endhighlight %}
 
-멋진가? 물론 당연하다. `controllerAs: 'vm'`에서 볼 수 있듯 컨트롤러를 `vm`이란 별칭으로 지정했다. (뷰모델 ViewModel을 뜻한다.) 이렇게 컨트롤러를 뷰모델로 다루는 것은 "프리젠테이션 모델 Presentation Model" 디자인 패턴에 해당한다. 이 문법에 익숙하지 않다면 [ControllerAs](http://toddmotto.com/digging-into-angulars-controller-as-syntax)([번역](http://haruair.com/blog/3186))에 대해 먼저 읽어보자. `$scope`를 필수적으로 주입하는 방식 대신 컨트롤러 자체를 `$scope` 내 `vm` 별칭에 바인딩하는 방식, 즉 `$scope.vm`을 생성하게 된다. `$scope` 대신 `this` 키워드를 사용하는 것으로 이 뷰-모델을 마치 컨트롤러 "클래스"인 것처럼 작성할 수 있다.
+멋진가? 당연하다. `controllerAs: 'vm'`에서 볼 수 있듯 컨트롤러를 `vm`이란 별칭으로 지정했다. (뷰모델 ViewModel을 뜻한다.) 이렇게 컨트롤러를 뷰모델로 다루는 것은 "프리젠테이션 모델 Presentation Model" 디자인 패턴에 해당한다. 이 문법에 익숙하지 않다면 [ControllerAs](http://toddmotto.com/digging-into-angulars-controller-as-syntax)([번역](http://haruair.com/blog/3186))에 대해 먼저 읽어보자. `$scope`를 필수적으로 주입하는 방식 대신 컨트롤러 자체를 `$scope` 내 `vm` 별칭에 바인딩하는 방식, 즉 `$scope.vm`을 생성하게 된다. `$scope` 대신 `this` 키워드를 사용하는 것으로 이 뷰-모델을 마치 컨트롤러 "클래스"인 것처럼 작성할 수 있다.
 
 {% highlight javascript %}
 /**
@@ -490,6 +490,6 @@ angular
 {% endhighlight %}
 
 ### 정리, MVVM (Model-View-ViewModel)
-이 접근은 컨트롤러를 뷰 모델로 사용하는 방식이며 `link` 함수를 DOM 조작에 활용함과 동시에 컨트롤러에게 간단한 일을 전달하는 역할을 하도록 처리하는 역할을 한다. 이 접근은 함수 내부에 객체를 제공하는 등의 방법으로 중첩된 여러 계층의 코드를 작성하는 것과 같이 복잡한 방법을 사용하지 않고, 마치 코드 자체가 별도로 구성된 것 같이, 함수를 분리하고 다시 할당하는 방식으로 서로 의존적인 관계를 분리하는데 더 적합하다.
+이 접근은 컨트롤러를 뷰 모델로 사용하는 방식이며 `link` 함수를 DOM 조작에 활용함과 동시에 컨트롤러에 간단한 일을 전달하는 역할을 하도록 처리하는 역할을 한다. 이 접근은 함수 내부에 객체를 제공하는 등의 방법으로 중첩된 여러 계층의 코드를 작성하는 것과 같이 복잡한 방법을 사용하지 않고, 마치 코드 자체가 별도로 구성된 것 같이, 함수를 분리하고 다시 할당하는 방식으로 서로 의존적인 관계를 분리하는 데 더 적합하다.
 
 의견이나 개선점은 [Github 이슈](https://github.com/toddmotto/toddmotto.github.io)로 남겨주기 바란다. Enjoy!
