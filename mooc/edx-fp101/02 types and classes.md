@@ -39,4 +39,10 @@ Every well formed expression has a type, which can be automatically calculated a
     (False,'a') :: (Bool,Char)
     (True,['a','b']) :: (Bool,[Char])
 
+## Function 타입
+function은 한 타입의 값에서 다른 타입의 값으로 mapping 하는 것
+
+    not :: Bool -> Bool
+    isDigit :: Char -> Bool
+
 
