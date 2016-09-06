@@ -9,8 +9,12 @@ There's a lot of misunderstanding between ``setup.py`` and ``requirements.txt``
 and their roles. A lot of people have felt they are duplicated information and
 have even created [tools][1] to handle this "duplication".
 
+``setup.py``와 ``requirements.txt``의 역할에 대한 오해가 많다. 사람들 대다수가 이 둘을
+중복된 정보를 제공하고 있다고 생각하고 있고 이 "중복"을 다루기 위한 [도구][1]를 만들기까지 했다.
 
 ## Python Libraries
+
+## 파이썬 라이브러리
 
 A Python library in this context is something that has been developed and
 released for others to use. You can find a number of them on [PyPI][2] that others
@@ -18,6 +22,12 @@ have made available. A library has a number of pieces of metadata that need to
 be provided in order to successfully distribute it. These are things such as
 the Name, Version, Dependencies, etc. The ``setup.py`` file gives you the
 ability to specify this metadata like:
+
+이 글에서 이야기하는 파이썬 라이브러리는 타인이 사용할 수 있도록 개발하고 릴리스하는 것을
+의미한다. 다른 사람들이 만든 수많은 라이브러리는 [PyPI][2]에서 찾을 수 있을 것이다. 각각의 라이브러리가
+제공될 때 문제 없이 배포될 수 있도록 메타데이터를 포함하고 있다. 이 메타데이터는 명칭, 버전, 의존성 등을
+포함한다. 라이브러리에 이와 같은 메타데이터를 정의할 수 있도록 ``setup.py`` 파일에서 다음과 같은 기능을
+제공한다.
 
 ```python
 from setuptools import setup
@@ -41,6 +51,14 @@ important and for lack of a better term I call these "abstract dependencies".
 They are dependencies which exist only as a name and an optional version
 specifier. Think of it like duck typing your dependencies, you don't care what
 specific "requests" you get as long as it looks like "requests".
+
+이 방식은 매우 단순해서 필요한 메타 데이터를 정의하기에 부족하지 않다. 하지만 이 명세에서는
+이 의존성을 어디에서 가져와 해결해야 하는지에 대해서는 적혀있지 않다. 단순히 "requests", "bcrypt"라고만
+적혀있고 URL도, 파일 경로도 존재하지 않아서 어디서 의존 라이브러리를 가져와야 하는지 불분명하다.
+이 특징은 중요하며 이 부분에 대한 특별한 용어가 있는 것은 아니지만 "추상 의존성(abstract dependencies)"라고
+이야기할 수 있다. 이 의존성에는 의존 라이브러리의 명칭만 존재하며 선택적으로 버전 지정도 할 수 있다.
+의존성 라이브러리를 덕 타이핑(duck typing)한다고 가정해보자. 사실 특정 라이브러리인 "requests"가
+필요한 것이 아니라 "requests"처럼 보이는 라이브러리만 있으면 된다.
 
 
 ## Python Applications
