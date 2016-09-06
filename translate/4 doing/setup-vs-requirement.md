@@ -63,12 +63,21 @@ specific "requests" you get as long as it looks like "requests".
 
 ## Python Applications
 
+## 파이썬 어플리케이션
+
 Here when I speak of a Python application I'm going to typically be speaking
 about something that you specifically deploy. It may or may not exist on PyPI
 but it's something that likely does not have much in the way of reusability. An
 application that does exist on PyPI typically requires a deploy specific
 configuration file and this section deals with the "deploy specific" side of a
 Python application.
+
+여기서 이야기하는 파이썬 어플리케이션은 일반적으로 서버에 배포하게 되는 부분을 뜻한다.
+이 코드는 PyPI에 존재할 수도 있고 존재하지 않을 수도 있다. 하지만 이 코드에서 재사용을
+위해 작성한 부분은 그리 많지 않을 것이다. PyPI에 존재하는 어플리케이션 중에는 일반적으로
+특정 배포를 위한 설정 파일이 필요하다. 여기서는 "배포에 초점을 둔" 파이썬 어플리케이션을
+중심으로 다룬다.
+
 
 An application typically has a set of dependencies, often times even a very
 complex set of dependencies, that it has been tested against. Being a specific
