@@ -74,8 +74,8 @@ Python application.
 
 여기서 이야기하는 파이썬 어플리케이션은 일반적으로 서버에 배포하게 되는 부분을 뜻한다.
 이 코드는 PyPI에 존재할 수도 있고 존재하지 않을 수도 있다. 하지만 이 코드에서 재사용을
-위해 작성한 부분은 그리 많지 않을 것이다. PyPI에 존재하는 어플리케이션 중에는 일반적으로
-특정 배포를 위한 설정 파일이 필요하다. 여기서는 "배포에 초점을 둔" 파이썬 어플리케이션을
+위해 작성한 부분은 그리 많지 않을 것이다. PyPI에 존재하는 어플리케이션은 일반적으로
+배포를 위한 특정 설정 파일이 필요하다. 여기서는 "배포에 초점을 둔" 파이썬 어플리케이션을
 중심으로 다룬다.
 
 
@@ -86,8 +86,15 @@ the other packaging related metadata. This is reflected in the abilities of a
 [pip][3] requirements file. A typical requirements file might look something
 like:
 
+어플리케이션은 일반적으로 의존성 라이브러리를 갖고 있는 데다 대부분 복잡하게 많은
+의존성을 갖는 경우가 많고 이런 의존성을 검사할 필요도 없었다. 이렇게 배포(deploy)되는
+특정 인스턴스를 위한 코드는 이름을 갖고 있지 않거나 다른 패키지와의 관계를 메타데이터로
+갖지 않는 경우가 일반적이다. 이런 경우에는 [pip][3]의 requirements 파일 기능으로 환경을
+저장할 수 있다. requirements 파일 대부분은 다음과 같은 모습을 하고 있다.
+
 ```ini
 # This is an implicit value, here for clarity
+# 이 플래그는 기본 값으로 설정된 부분이지만 관계를 명확하게 보여주기 위해 추가함
 --index-url https://pypi.python.org/simple/
 
 MyPackage==1.0
@@ -101,6 +108,12 @@ application wants very specific dependencies. It may not have mattered up
 front what version of requests was installed but you want the same version
 to install in production as you developed and tested with locally.
 
+이 파일에서는 각 의존성 라이브러리를 정확한 버전 지정과 함께 확인할 수 있다.
+라이브러리에서는 넓은 범위의 버전 지정을 사용하는 편이지만 어플리케이션은 매우
+특정한 버전의 의존성을 갖는다. requests가 정확하게 어떤 버전이 설치되었는지는 큰
+문제가 되지 않지만 이렇게 명확한 버전을 기입하면 로컬에서 테스트하거나 개발하는 환경에서도
+프로덕션에 설치한 의존성과 정확히 동일한 버전을 사용할 수 있게 된다.
+
 At the top of this file you'll also notice a
 ``--index-url https://pypi.python.org/simple/``. Your typical requirements.txt
 won't have this listed explicitly like this unless they are not using PyPI, it
@@ -110,14 +123,28 @@ dependency of "requests 1.2.0 from https://pypi.python.org/simple/". This is
 not like duck typing, this is the packaging equivalent of an ``isinstance()``
 check.
 
+파일 첫 부분에 ``--index-url https://pypi.python.org/simple/`` 부분을 이미 눈치챘을
+것이다. requirements.txt에는 PyPI를 사용하지 않는 경우를 제외하고는 일반적으로 인덱스
+주소를 명시하지 않긴 하지만 ``requirements.txt``에서 중요한 부분에 해당한다. 이 내용 한 줄이
+추상 의존성이었던 ``requests==1.2.0``을 "구체적인" 의존성인 "https://pypi.python.org/simple/에
+있는 requests 1.2.0"으로 처리하게 만든다. 즉, 더이상 덕 타이핑이 아니라 ``isinstance()`` 확인과
+동일한 패키징 방식이라고 할 수 있다.
+
 
 ## So Why Does Abstract and Concrete Matter?
+
+## 추상 의존성 또는 구체적인 의존성에는 어떤 문제가 있을까?
 
 You've read this far and maybe you've said, ok I know that ``setup.py`` is
 designed for redistributable things and that ``requirements.txt`` is designed
 for non-redistributable things but I already have something that reads a
 ``requirements.txt`` and fills out my ``install_requires=[...]`` so why should I
 care?
+
+여기까지 읽었다면 이렇게 생각할 수도 있다. ``setup.py``는 재배포를 위한 파일이고
+``requirements.txt``는 배포할 수 없는 것을 위한 파일이라고 했지만 이미 ``requirements.txt``에
+담긴 항목이 ``install_requires=[...]``에 정의된 의존성과 동일한데 왜 이런 부분을
+신경써야 하는가 말이다.
 
 This split between abstract and concrete is an important one. It was what
 allows the PyPI mirroring infrastructure to work. It is what allows a company
