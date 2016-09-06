@@ -57,8 +57,8 @@ specific "requests" you get as long as it looks like "requests".
 적혀있고 URL도, 파일 경로도 존재하지 않아서 어디서 의존 라이브러리를 가져와야 하는지 불분명하다.
 이 특징은 중요하며 이 부분에 대한 특별한 용어가 있는 것은 아니지만 "추상 의존성(abstract dependencies)"라고
 이야기할 수 있다. 이 의존성에는 의존 라이브러리의 명칭만 존재하며 선택적으로 버전 지정도 할 수 있다.
-의존성 라이브러리를 덕 타이핑(duck typing)한다고 가정해보자. 사실 특정 라이브러리인 "requests"가
-필요한 것이 아니라 "requests"처럼 보이는 라이브러리만 있으면 된다.
+의존성 라이브러리를 덕 타이핑(duck typing)한다고 생각해보자. 이런 맥락에서 생각하면 특정
+라이브러리인 "requests"가 필요한 것이 아니라 "requests"처럼 보이는 라이브러리만 있으면 된다는 뜻이다.
 
 
 ## Python Applications
