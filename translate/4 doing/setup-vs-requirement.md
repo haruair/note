@@ -205,7 +205,7 @@ Setuptools has a feature similar to the Go example. It's called
 [dependency links][5] and it looks like this:
 
 Setuptools는 Go 예제와 비슷한 기능이 존재한다. [의존성 링크(dependency links)][5]
-라는 기능이며 다음 코드처럼 작성한다.
+라는 기능이며 다음 코드처럼 작성할 수 있다.
 
 Setup
 
@@ -226,6 +226,12 @@ hardcodes an exact url from which you can fetch the dependency from. Now very
 similarly to Go if we want to modify packages, or simply fetch them from a
 different server we'll need to go in and edit each package in the dependency
 chain in order to update the ``dependency_links``.
+
+이 setuptools의 "기능"은 의존성 라이브러리의 추상성을 지우고 강제로 기입(hardcode)하는 기능으로
+이 의존성 패키지를 정확히 어디에서 찾을 수 있는지 url을 저장하게 된다. 이제 Go에서 살펴본
+예제처럼 패키지를 조금 수정한 다음 패키지를 다른 서버에서 가져와야 하는 간단한 작업에도
+``dependency_links``를 변경해야 한다. 사용하는 패키지의 모든 의존성 체인을 찾아다니며
+이 주소를 수정해야 하는 상황이 되었다.
 
 
 ## Developing Reusable Things or How Not to Repeat Yourself
