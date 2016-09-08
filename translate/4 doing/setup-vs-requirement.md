@@ -155,11 +155,23 @@ it from PyPI or from Crate.io, or from your own filesystem. You can fork a
 library, change the code, and as long as it has the right name and version
 specifier that library will happily go on using it.
 
+추상 의존과 구체적 의존을 분리하는 것은 중요하다. 이런 접근 방식이 있기 때문에 PyPI를
+미러링해서 사용하는 것이 가능하다. 또한 같은 이유로 회사 스스로 사설(private) 패키지 색인을
+구축해서 사용할 수 있는 것이다. 동일한 라이브러리를 가져와서 버그를 고치거나 새로운 기능을
+더한 다음에 그 라이브러리를 의존성으로 사용하는 것도 가능하게 된다. 추상 의존성은 명칭,
+버전 지정만 있고 이 의존성을 설치할 때 해당 패키지를 PyPI에서 받을지, Create.io에서 받을지,
+아니면 자신의 파일 시스템에서 지정할 수 있기 때문이다. 라이브러리를 포크하고 코드를 변경했다 하더라도
+라이브러리에 명칭과 버전 지정을 올바르게 했다면 이 라이브러리를 사용하는데 전혀 문제가 없을 것이다.
+
 A more extreme version of what can happen when you use a concrete requirement
 where an abstract requirement should be used can be found in the
 [Go language][4]. In the go language the default package manager (``go get``)
 allows you to specify your imports via an url inside the code which the package
 manager collects and downloads. This would look something like:
+
+구체적인 요구 사항을 추상적 요구사항이 필요한 곳에서 사용했을 때 발생하는 문제가 있다. 그 문제에
+대한 극단적인 예시는 [Go 언어][4]에서 찾아볼 수 있다. go에서 사용하는 기본 패키지 관리자(``go get``)는
+사용할 패키지를 다음 예제처럼 URL로 지정해서 받아오는 것이 가능하다.
 
 ```go
 import (
@@ -176,11 +188,26 @@ bar library was say, 5 levels deep, then that's a potential of 5 different
 packages that I would need to fork and modify only to point it at a slightly
 different "bar".
 
+이 코드에서 의존성이 정확한 주소로 지정된 것을 확인할 수 있다. 이제 이 라이브러리를
+사용하면서 "bar" 라이브러리에 존재하는 버그가 내 작업에 영향을 줘서 "bar" 라이브러리를
+교체하려고 한다고 생각해보자. "bar" 라이브러리를 포크해서 문제를 수정했다면 이제
+"bar" 라이브러리의 의존성이 명시된 코드를 변경해야 한다. 물론 지금 바로 수정할 수 있는
+패키지라면 상관 없겠지만 5단계 깊숙히 존재하는 라이브러리의 의존성이라면 일이 커지게 된다.
+단지 조금 다른 "bar"를 쓰기 위한 작업인데 다른 패키지를 최소 5개를 포크하고 내용을 수정해서
+라이브러리를 갱신해야 하는 상황이 되고 말았다.
+
 
 ### A Setuptools Misfeature
 
+### Setuptools의 잘못된 기능
+
 Setuptools has a feature similar to the Go example. It's called
 [dependency links][5] and it looks like this:
+
+Setuptools는 Go 예제와 비슷한 기능이 존재한다. [의존성 링크(dependency links)][5]
+라는 기능이며 다음 코드처럼 작성한다.
+
+Setup
 
 ```python
 from setuptools import setup
