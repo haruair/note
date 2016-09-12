@@ -236,6 +236,8 @@ chain in order to update the ``dependency_links``.
 
 ## Developing Reusable Things or How Not to Repeat Yourself
 
+## 다시 사용할 수 있도록 만들기 또는 같은 일을 반복하지 않는 방법
+
 The "Library" and "Application" distinction is all well and good, but whenever
 you're developing a Library, in a way *it* becomes your application. You want a
 specific set of dependencies that you want to fetch from a specific location
@@ -245,6 +247,14 @@ need to maintain two separate lists which will inevitably go out of sync. As it
 turns out pip requirements file have a construct to handle just such a case.
 Given a directory with a ``setup.py`` inside of it you can write a requirements
 file that looks like:
+
+"라이브러리"와 "어플리케이션"을 구분하는 일은 좋은 방법이다. 하지만 라이브러리를
+개발하다보면 언제든 *그 코드*가 어플리케이션처럼 될 때가 있다. 특정 장소에서 일련의
+의존성을 받아와서 사용하려고 할 때 ``setup.py``에 기록한 추상 의존성과 ``requirements.txt``에
+저장한 구체적 의존성을 분리해서 저장해야 한다는 사실을 이제는 알게 되었다. 하지만
+의존성 목록을 두 목록으로 분리해서 관리하다보면 언젠가는 두 목록이 어긋나는 일이 필연적으로
+나타난다. 이런 상황을 해결할 수 있도록 pip에서 다음 같은 기능을 requirements 파일에서
+제공한다. ``setup.py``와 동일한 디렉토리 내에 아래 내용처럼 requirements 파일을 작성하자.
 
 ```ini
 --index-url https://pypi.python.org/simple/
@@ -257,12 +267,24 @@ first install the library located at the file path ``.`` and then move on to
 its abstract dependencies, combining them with its ``--index-url`` option and
 turning them into concrete dependencies and installing them.
 
+이제 ``pip install -r requirements.txt`` 명령을 실행해보면 이전과 동일하게 동작할
+것이다. 이 명령으로 먼저 파일 경로 ``.``에 위치한 라이브러리를 설치한다. 그리고 추상
+의존성을 확인할 때 ``--index-url`` 설정의 경로를 참조해서 구체적인 의존성으로 전환하고
+그 의존성을 마저 설치하게 된다.
+
 This method grants another powerful ability. Let's say you have two or more
 libraries that you develop as a unit but release separately, or maybe you've
 just split out part of a library into its own piece and haven't officially
 released it yet. If your top level library still depends on just the name then
 you can install the development version when using the ``requirements.txt`` and
 the release version when not, using a file like:
+
+이 방식은 또 다른 강력한 기능을 활용할 수 있게 한다. 만약 단위별로 나눠서 배포하고 있는
+라이브러리가 둘 이상 있다고 생각해보자. 또는 공식적으로 릴리스하지 않은 기능을 별도의
+부분 라이브러리로 분리해서 개발하고 있다고 생각해보자. 라이브러리가 분할되어 있다고 하더라도
+이 라이브러리를 참조할 때는 최상위 라이브러리 명칭을 의존성에 입력하게 된다. 모든 라이브러리
+의존성은 그대로 설치하면서 부분적으로는 개발 버전의 라이브러리를 설치하고 싶은 경우에는 다음처럼
+``requirements.txt``에 개발 버전을 먼저 설치해서 개발 버전의 부분 라이브러리를 사용하는 것이 가능하다.
 
 ```ini
 --index-url https://pypi.python.org/simple/
@@ -277,9 +299,17 @@ again combining its dependencies with the ``--index`` option and installing
 but this time since the "bar" dependency has already been satisfied it will
 skip it and continue to use the in development version.
 
+이 설정 파일은 먼저 "bar"라는 이름을 사용하고 있는 bar 라이브러리를 https://github.com/foo/bar.git 에서
+받아 설치한 다음에 현재 로컬 패키지를 설치하게 된다. 여기서도 의존성을 조합하고 설치하기 위해
+``--index`` 옵션을 사용했다. 하지만 여기서는 "bar" 라이브러리 의존성을 github을 통해 먼저
+설치했기 때문에 "bar" 의존성은 index로부터 설치하지 않고 개발 버전을 사용하는 것으로 계속
+진행할 수 있게 된다.
+
 
 _**Recognition:** This post was inspired by [Yehuda Katz's blog post][6] on a
 similar issue in Ruby with ``Gemfile`` and ``gemspec``._
+
+_이 포스트는 [Yehuda Katz의 블로그 포스트][6]에서 다룬 ``Gemfile``과 ``gemspec``에서 영감을 얻어 작성했다._
 
 [1]: https://pypi.python.org/pypi/pbr/#requirements
 [2]: https://pypi.python.org/pypi
