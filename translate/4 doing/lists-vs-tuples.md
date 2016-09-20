@@ -1,0 +1,165 @@
+# Lists vs. Tuples
+
+Original: [Lists vs. Tuples](http://nedbatchelder.com/blog/201608/lists_vs_tuples.html)
+
+----
+
+A common beginner Python question: what's the difference between a list and a tuple?
+
+Python에 입문하는 사람들이 흔하게 하는 질문이 있다. 리스트(list)와 튜플(tuple)의 차이는 무엇인가?
+
+The answer is that there are two different differences, with complex interplay between the two. There is the Technical Difference, and the Cultural Difference.
+
+이 질문의 답변은 이렇다. 이 두 타입은 각각 상호작용에 있어 두 가지 다른 차이점이 존재한다. 바로 기술적인 차이와 문화적인 차이다.
+
+First, the things that are the same: both lists and tuples are containers, a sequence of objects:
+
+먼저 두 타입의 공통점을 확인하자. 리스트와 튜플은 둘 다 컨테이너로 일련의 객체를 저장하는데 사용한다.
+
+```python
+>>> my_list = [1, 2, 3]
+>>> type(my_list)
+<class 'list'>
+>>> my_tuple = (1, 2, 3)
+>>> type(my_tuple)
+<class 'tuple'>
+```
+
+Either can have elements of any type, even within a single sequence. Both maintain the order of the elements (unlike sets and dicts).
+
+둘 다 타입과 상관 없이 일련의 요소(element)를 갖을 수 있다. 두 타입 모두 요소의 순서를 관리한다. (세트(set)나 딕셔너리(dict)와 다르게 말이다.)
+
+Now for the differences. The Technical Difference between lists and tuples is that lists are mutable (can be changed) and tuples are immutable (cannot be changed). This is the only distinction that the Python language makes between them:
+
+이제 차이점을 보자. 리스트와 튜플의 기술적 차이점은 불변성에 있다. 리스트는 가변적(mutable, 변경 가능)이며 튜플은 불변적(immutable, 변경 불가)이다. 이 특징이 파이썬 언어에서 둘을 구분하는 유일한 차이점이다.
+
+```python
+>>> my_list[1] = "two"
+>>> my_list
+[1, 'two', 3]
+>>> my_tuple[1] = "two"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+```
+
+That's the only technical difference between lists and tuples, though it manifests in a few ways. For example, lists have a .append() method to add more elements to the list, while tuples do not:
+
+이 특징은 리스트와 튜플을 구분하는 유일한 기술적 차이점이지만 이 특징이 나타나는 부분은 여럿 존재한다. 예를 들면 리스트에는 `.append()` 메소드를 사용해서 새로운 요소를 추가할 수 있지만 튜플은 불가능하다.
+
+```python
+>>> my_list.append("four")
+>>> my_list
+[1, 'two', 3, 'four']
+>>> my_tuple.append("four")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'tuple' object has no attribute 'append'
+```
+
+Tuples have no need for an .append() method, because you can't modify tuples.
+
+튜플은 `.append()` 메소드가 필요하지 않다. 튜플은 수정할 수 없기 때문이다.
+
+The Cultural Difference is about how lists and tuples are actually used: lists are used where you have a homogenous sequence of unknown length; tuples are used where you know the number of elements in advance because the position of the element is semantically significant.
+
+문화적으로는 리스트와 튜플을 실제로 어떻게 사용하는가에 대한 차이점이 있다. 리스트는 단일 종류의 요소를 갖고 있고 그 일련의 요소가 몇 개나 들어 있는지 명확하지 않은 경우에 주로 사용한다. 튜플은 들어 있는 요소의 수를 사전에 정확히 알고 있을 경우에 사용하는데 튜플에서는 요소의 위치가 큰 의미를 갖고 있기 때문이다.
+
+For example, suppose you have a function that looks in a directory for files ending with *.py. It should return a list, because you don't know how many you will find, and all of them are the same semantically: just another file that you found.
+
+디렉토리 내에 있는 파일 중 `*.py`로 끝나는 파일을 찾는 함수를 작성한다고 가정해보자. 이 함수를 사용했을 때는 파일을 몇 개나 찾게 될 지 알 수 없다. 그리고 동일한 규칙으로 찾은 파일이기 때문에 항목 하나 하나가 의미상 동일하다. 그러므로 이 함수는 리스트를 반환할 것이다.
+
+```python
+>>> find_files("*.py")
+["control.py", "config.py", "cmdline.py", "backward.py"]
+```
+
+On the other hand, let's say you need to store five values to represent the location of weather observation stations: id, city, state, latitude, and longitude. A tuple is right for this, rather than a list:
+
+다른 예를 확인한다. 기상 관측소의 5가지 정보, 식별번호, 도시, 주, 경도와 위도를 저장한다고 생각해보자. 이런 상황에서는 리스트보다 튜플을 사용하는 것이 적합하다.
+
+```python
+>>> denver = (44, "Denver", "CO", 40, 105)
+>>> denver[1]
+'Denver'
+```
+
+(For the moment, let's not talk about using a class for this.) Here the first element is the id, the second element is the city, and so on. The position determines the meaning.
+
+(지금은 클래스를 사용하는 것에 대해서 이야기하지 않을 것이다.) 이 튜플에서 첫 요소는 식별번호, 두 번째는 도시... 순으로 작성했다. 튜플에서의 위치가 담긴 내용이 어떤 정보인지를 나타낸다.
+
+To put the Cultural Difference in terms of the C language, lists are like arrays, tuples are like structs.
+
+C 언어에서 이 문화적 차이를 대입해보면 목록은 배열(array) 같고 튜플은 구조체(struct)와 비슷할 것이다.
+
+Python has a namedtuple facility that can make the meaning more explicit:
+
+파이썬은 네임드튜플(namedtuple)을 제공하는데 이 네임드튜플을 사용하면 튜플에서 각 위치의 의미를 명시적으로 작성할 수 있다.
+
+```python
+>>> from collections import namedtuple
+>>> Station = namedtuple("Station", "id, city, state, lat, long")
+>>> denver = Station(44, "Denver", "CO", 40, 105)
+>>> denver
+Station(id=44, city='Denver', state='CO', lat=40, long=105)
+>>> denver.city
+'Denver'
+>>> denver[1]
+'Denver'
+```
+
+One clever summary of the Cultural Difference between tuples and lists is: tuples are namedtuples without the names.
+
+튜플과 리스트의 문화적 차이를 영악하게 정리한다면 튜플은 네임드튜플에서 이름이 없는 것이라고 할 수 있다.
+
+The Technical Difference and the Cultural Difference are an uneasy alliance, because they are sometimes at odds. Why should homogenous sequences be mutable, but hetergenous sequences not be? For example, I can't modify my weather station because a namedtuple is a tuple, which is immutable:
+
+기술적 차이점과 문화적 차이점을 연계해서 생각하기란 쉽지 않은데 종종 이 차이점이 이상할 때가 있기 때문이다. 왜 단일 종류의 일련 데이터는 가변적이고 여러 종류의 일련 데이터는 불변이어야 하는 것일까? 예를 들면 앞에서 저장했던 기상관측소의 데이터는 수정할 수 없다. 네임드 튜플은 튜플이고 튜플은 불변이기 때문이다.
+
+```python
+>>> denver.lat = 39.7392
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: can't set attribute
+```
+
+And sometimes the Technical considerations override the Cultural considerations. You cannot use a list as a dictionary key, because only immutable values can be hashed, so only immutable values can be keys. To use a list as a key, you can turn it into a tuple:
+
+때때로 기술적인 고려가 문화적 고려를 덮어쓰는 경우가 있다. 리스트를 딕셔너리에서 키로 사용할 수 없다. 불변 값만 해시를 만들 수 있기 때문에 키에 불변 값만 사용 가능하다. 대신 리스트를 키로 사용하고 싶다면 다음 예처럼 리스트를 튜플로 변경했을 때 사용할 수 있다.
+
+```python
+>>> d = {}
+>>> nums = [1, 2, 3]
+>>> d[nums] = "hello"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'list'
+>>> d[tuple(nums)] = "hello"
+>>> d
+{(1, 2, 3): 'hello'}
+```
+
+Another conflict between the Technical and the Cultural: there are places in Python itself where a tuple is used when a list makes more sense. When you define a function with *args, args is passed to you as a tuple, even though the position of the values isn't significant, at least as far as Python knows. You might say it's a tuple because you cannot change what you were passed, but that's just valuing the Technical Difference over the Cultural.
+
+또 다른 기술과 문화가 충돌하는 예가 있다. 파이썬에서도 리스트가 더 적합한 상황에서 튜플을 사용하는 경우가 있다. `*args`를 함수에서 정의했을 때, args로 전달되는 인자는 튜플을 사용한다. 함수를 호출할 때 사용한 인자의 순서가 크게 중요하지 않더라도 말이다. 튜플은 불변이고 전달된 값은 변경할 수 없기 때문에 이렇게 구현되었다고 말할 수 있곘지만 그건 문화적 차이보다 기술적 차이에 더 가치를 두고 설명하는 방식이라 볼 수 있다.
+
+I know, I know: in *args, the position could be significant because they are positional parameters. But in a function that's accepting *args and passing it along to another function, it's just a sequence of arguments, none different from another, and the number of them can vary between invocations.
+
+물론 `*args`에서 위치는 매우 큰 의미를 갖는다. 매개변수는 그 위치에 따라 의미가 크게 달라지기 때문이다. 하지만 함수는 `*args`를 전달 받고 다른 함수에 전달해준다고만 봤을 때 `*args`는 단순히 인자 목록이고 각 인자는 별 다른 의미적 차이가 없다고 할 수 있다. 그리고 각 함수에서 함수로 이동할 때마다 그 목록의 길이는 가변적인 것으로 볼 수 있다.
+
+Python uses tuples here because they are a little more space-efficient than lists. Lists are over-allocated to make appending faster. This shows Python's pragmatic side: rather than quibble over the list/tuple semantics of *args, just use the data structure that works best in this case.
+
+파이썬이 여기서 튜플을 사용하는 이유는 리스트에 비해서 조금 더 공간 효율적이기 때문이다. 리스트는 요소를 추가하는 동작을 빠르게 수행할 수 있도록 더 많은 공간을 저장해둔다. 이 특징은 파이썬의 실용주의적 측면을 나타낸다. 이런 상황처럼 `*args`를 두고 리스트인지 튜플인지 언급하기 어려운 애매할 때는 그냥 상황을 쉽게 설명할 수 있도록 자료 구조(data structure)라는 표현을 쓰면 될 것이다.
+
+For the most part, you should choose whether to use a list or a tuple based on the Cultural Difference. Think about what your data means. If it can have different lengths based on what your program encounters in the real world, then it is probably a list. If you know when you write the code what the third element means, then it is probably a tuple.
+
+대부분의 경우에 리스트를 사용할지, 튜플을 사용할지는 문화적 차이에 기반해서 선택하게 될 것이다. 어떤 의미의 데이터인지 생각해보자. 만약 프로그램이 실제로 다루는 자료가 다른 길이의 데이터를 갖는다면 분명 리스트를 써야 할 것이다. 작성한 코드에서 세 번째 요소에 의미가 있는 경우라면 분명 튜플을 사용해야 할 상황이다.
+
+On the other hand, functional programming emphasizes immutable data structures as a way to avoid side-effects that can make it difficult to reason about code. If you are a functional programming fan, you will probably prefer tuples for their immutability.
+
+반면 함수형 프로그래밍에서는 코드를 어렵게 만들 수 있는 부작용을 피하기 위해서 불변 데이터 구조를 사용하라고 강조한다. 만약 함수형 프로그래밍의 팬이라면 튜플이 제공하는 불변성 때문에라도 분명 튜플을 좋아하게 될 것이다.
+
+So: should you use a tuple or a list? The answer is: it's not always a simple answer.
+
+자, 다시 질문해보자. 튜플을 써야 할까, 리스트를 사용해야 할까? 이 질문의 답변은 항상 간단하지 않다.
+
